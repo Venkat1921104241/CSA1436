@@ -1,0 +1,15 @@
+%{
+int comment_count = 0;
+%}
+
+%%
+^\/\/.*    { comment_count++; }
+\n         { /* Newline character, do nothing */ }
+.          { /* Any other character, do nothing */ }
+%%
+
+int main() {
+    yylex();
+    printf("Number of comment lines: %d\n", comment_count);
+    return 0;
+}
