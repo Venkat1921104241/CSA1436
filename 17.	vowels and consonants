@@ -1,0 +1,18 @@
+%{
+int vowels = 0;
+int consonants = 0;
+%}
+
+%%
+[aAeEiIoOuU]   { vowels++; }
+[A-Za-z]       { consonants++; }
+.              /* Ignore all other characters. */
+\n             /* Ignore newlines. */
+%%
+
+int main() {
+    yylex();
+    printf("Vowels: %d\n", vowels);
+    printf("Consonants: %d\n", consonants);
+    return 0;
+}
