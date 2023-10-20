@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+int position = 0;
+
+// Function to check if the current character matches the expected one
+bool match(char expected, char *input) {
+    if (input[position] == expected) {
+        position++;
+        return true;
+    }
+    return false;
+}
+
+// Function to parse F
+bool parseF(char *input);
+
+// Function to parse T'
+bool parseTPrime(char *input) {
+    int temp_pos = position;
+
+    if (match('*', input) && parseF(input) && parseTPrime(input)) {
+        return true;
+    }
+
+    position = temp_pos;
+
+    if (match('/', input) && parseF(input) && parseTPrime(input)) {
+        return true;
+    }
+
+    position = temp_pos;
+    return true;
+}
+
+// Function to parse T
+bool parseT(char *input) {
+    return parseF(input) && parseTPrime(input);
+}
+
+// Function to parse E'
+bool parseEPrime(char *input) {
+    int temp_pos = position;
+
+    if (match('+', input) && parseT(input) && parseEPrime(input)) {
+        return true;
+    }
+
+    position = temp_pos;
+
+    if (match('-', input) && parseT(input) && parseEPrime(input)) {
+        return true;
+    }
+
+    position = temp_pos;
+    return true;
+}
+
+// Function to parse E
+bool parseE(char *input) {
+    return parseT(input) && parseEPrime(input);
+}
+
+// Function to parse F
+bool parseF(char *input) {
+    if (match('(', input) && parseE(input) && match(')', input)) {
+        return true;
+    }
+
+    if (match('n', input) && match('u', input) && match('m', input) && match('b', input) && match('e', input) && match('r', input)) {
+        return true;
+    }
+
+    return false;
+}
+
+int main() {
+    char input[] = "number+number*number-number/number";
+
+    if (parseE(input) && position == sizeof(input) - 1) {
+        printf("Valid expression!\n");
+    } else {
+        printf("Invalid expression!\n");
+    }
+
+    return 0;
+}
