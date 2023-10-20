@@ -1,0 +1,32 @@
+#include <stdio.h>
+
+int main() {
+    int x = 10;
+    int y = 20;
+    int z;
+
+    // Dead code: This block of code has no effect on the program
+    if (x == 5) {
+        z = 2 * y;
+        printf("This block is never executed.\n");
+    }
+
+    // Live code: This part of the program is active
+    z = x + y;
+    printf("The sum of x and y is: %d\n", z);
+
+    return 0;
+}
+#include <stdio.h>
+
+int main() {
+    int x = 10;
+    int y = 20;
+    int z;
+
+    // Live code: This part of the program is active
+    z = x + y;
+    printf("The sum of x and y is: %d\n", z);
+
+    return 0;
+}
