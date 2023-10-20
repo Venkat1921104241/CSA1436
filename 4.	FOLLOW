@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <string.h>
+
+// Define a stack data structure
+#define MAX_STACK 100
+char stack[MAX_STACK];
+int top = -1;
+
+// Define a parsing table
+char parsingTable[3][3] = {
+    //    ID      +       $
+    { 'E',    ' ',    ' ' },  // E
+    { 'T',    ' ',    ' ' },  // T
+    { 'F',    ' ',    ' ' }   // F
+};
+
+// Define a function to push a character onto the stack
+void push(char symbol) {
+    if (top < MAX_STACK - 1) {
+        stack[++top] = symbol;
+    } else {
+        printf("Stack overflow.\n");
+    }
+}
+
+// Define a function to pop a character from the stack
+char pop() {
+    if (top >= 0) {
+        return stack[top--];
+    } else {
+        printf("Stack is empty.\n");
+        return '\0';
+    }
+}
+
+// Predictive parser function
+void predictiveParser(char input[]) {
+    int i = 0;
+    push('$');  // Push the end marker onto the stack
+    push('E');  // Push the start symbol onto the stack
+
+    while (top >= 0) {
+        char stackTop = pop();
+        char currentInput = input[i];
+
+        if (stackTop == currentInput) {
+            printf("Matched: %c\n", currentInput);
+            i++;
+        } else {
+            if (stackTop >= 'A' && stackTop <= 'Z') {
+                int row = stackTop - 'E';
+                int col;
+
+                if (currentInput == 'i') {
+                    col = 0;  // ID
+                } else if (currentInput == '+') {
+                    col = 1;  // +
+                } else {
+                    col = 2;  // $
+                }
+
+                if (parsingTable[row][col] != ' ') {
+                    char production[3] = {parsingTable[row][col], ' ', ' '};
+                    for (int j = 2; j >= 0; j--) {
+                        if (production[j] != ' ') {
+                            push(production[j]);
+                        }
+                    }
+
+                    printf("Derived: %c -> %c\n", stackTop, parsingTable[row][col]);
+                } else {
+                    printf("Parsing error.\n");
+                    break;
+                }
+            } else {
+                printf("Parsing error.\n");
+                break;
+            }
+        }
+    }
+
+    if (i == strlen(input) && top == -1) {
+        printf("Parsing completed successfully.\n");
+    }
+}
+
+int main() {
+    char input[] = "i+i$";  // Input string to parse
+    predictiveParser(input);
+    return 0;
+}
