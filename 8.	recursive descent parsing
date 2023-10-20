@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <ctype.h>
+
+// Function prototypes
+bool expression(char*);
+bool term(char*);
+bool factor(char*);
+bool match(char, char**);
+
+int main() {
+    char input[100];
+    printf("Enter an arithmetic expression: ");
+    scanf("%s", input);
+
+    if (expression(input)) {
+        printf("Valid expression\n");
+    } else {
+        printf("Invalid expression\n");
+    }
+
+    return 0;
+}
+
+bool expression(char* input) {
+    if (term(input)) {
+        while (*input == '+' || *input == '-') {
+            char op = *input;
+            input++;
+            if (!term(input)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool term(char* input) {
+    if (factor(input)) {
+        while (*input == '*' || *input == '/') {
+            char op = *input;
+            input++;
+            if (!factor(input)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool factor(char* input) {
+    if (isdigit(*input)) {
+        input++;
+        return true;
+    } else if (*input == '(') {
+        input++;
+        if (expression(input) && *input == ')') {
+            input++;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool match(char expected, char** input) {
+    if (**input == expected) {
+        (*input)++;
+        return true;
+    }
+    return false;
+}
