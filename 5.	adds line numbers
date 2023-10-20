@@ -1,0 +1,14 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+[a-zA-Z]+  { printf("Word: %s\n", yytext); }
+.         ;
+\n        { printf("Newline\n"); }
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
