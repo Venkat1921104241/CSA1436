@@ -1,0 +1,27 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+"<[^>]*>" {
+    printf("HTML_TAG: %s\n", yytext);
+}
+
+[^<]+ {
+    printf("HTML_CONTENT: %s\n", yytext);
+}
+
+\n {
+    // Ignore newlines
+}
+
+. {
+    // Ignore any other characters
+}
+
+%%
+
+int main(int argc, char** argv) {
+    yylex();
+    return 0;
+}
