@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+{URL} {
+    printf("URL: %s\n", yytext);
+}
+.|\n    ;   // Ignore any other characters
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
