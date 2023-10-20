@@ -1,0 +1,27 @@
+%{
+#include <stdio.h>
+%}
+
+DIGIT       [0-9]
+WS          [ \t\n]
+
+%%
+{DIGIT}+    {
+                int num = atoi(yytext);
+                printf("Number: %d\n", num);
+            }
+"("         { printf("Left Parenthesis\n"); }
+")"         { printf("Right Parenthesis\n"); }
+" + "       { printf("Addition\n"); }
+" - "       { printf("Subtraction\n"); }
+" * "       { printf("Multiplication\n"); }
+" / "       { printf("Division\n"); }
+{WS}+       ;  // Ignore whitespace
+.           { printf("Invalid character: %s\n", yytext); }
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
