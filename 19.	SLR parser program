@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+// Define the grammar and parsing table.
+// This is a simplified grammar for arithmetic expressions.
+char grammar[][10] = {
+    "E->E+T",
+    "E->T",
+    "T->T*F",
+    "T->F",
+    "F->(E)",
+    "F->i"
+};
+
+char actionTable[9][6][10] = {
+    "", "", "", "", "", "",
+    "", "", "", "", "", "",
+    "S5", "", "", "", "S4", "",
+    "", "S6", "", "", "", "acc",
+    "", "", "S7", "S8", "", "",
+    "", "", "R2", "R2", "", "R2",
+    "S5", "", "", "", "S4", "",
+    "", "R4", "", "", "R4", "",
+    "", "R5", "", "", "R5", ""
+};
+
+int gotoTable[9][3] = {
+    1, 2, 3,
+    -1, -1, -1,
+    -1, -1, -1,
+    -1, -1, -1,
+    8, 2, 3,
+    -1, -1, -1,
+    -1, 9, 3,
+    -1, -1, 10,
+    -1, -1, -1
+};
+
+char stack[100];
+int top = -1;
+
+void push(char state) {
+    stack[++top] = state;
+}
+
+char pop() {
+    return stack[top--];
+}
+
+int getTokenIndex(char token) {
+    if (token == '+') return 0;
+    if (token == '*') return 1;
+    if (token == '(') return 2;
+    if (token == ')') return 3;
+    if (token == 'i') return 4;
+    if (token == '$') return 5;
+    return -1;
+}
+
+int main() {
+    char input[100];
+    printf("Enter an expression: ");
+    scanf("%s", input);
+
+    push('0');
+    int i = 0;
+
+    while (1) {
+        int state = stack[top] - '0';
+        int tokenIndex = getTokenIndex(input[i]);
+
+        char* action = actionTable[state][tokenIndex];
+
+        if (action[0] == 'S') {
+            push(input[i]);
+            push(action[1]);
+            i++;
+        } else if (action[0] == 'R') {
+            int production = action[1] - '0';
+            int len = strlen(grammar[production]);
+
+            for (int j = 0; j < 2 * len; j++) {
+                pop();
+            }
+
+            char nonTerminal = grammar[production][0];
+            int newState = stack[top] - '0';
+            push(nonTerminal);
+            int gotoIndex = nonTerminal - 'A' - 2;
+            int newStateFromGoto = gotoTable[newState][gotoIndex] - '0';
+            push(newStateFromGoto + '0');
+        } else if (action[0] == 'a') {
+            printf("Accepted\n");
+            break;
+        } else {
+            printf("Error: Invalid input\n");
+            break;
+        }
+    }
+
+    return 0;
+}
