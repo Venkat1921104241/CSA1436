@@ -1,0 +1,30 @@
+#include <stdio.h>
+
+// Structure to represent a quadruple
+struct Quadruple {
+    char operator;
+    char operand1;
+    char operand2;
+    char result;
+};
+
+int main() {
+    struct Quadruple quadruples[4];
+
+    // Initialize quadruples for the expression "a = b + c * d"
+    quadruples[0] = (struct Quadruple){'=', 'b', 'c', 'temp1'};
+    quadruples[1] = (struct Quadruple){'*', 'c', 'd', 'temp2'};
+    quadruples[2] = (struct Quadruple){'+', 'b', 'temp2', 'temp3'};
+    quadruples[3] = (struct Quadruple){'=', 'temp3', '_', 'a'};
+
+    // Print the quadruples
+    printf("Quadruples:\n");
+    printf("---------------\n");
+    printf("%-4s %-5s %-5s %-5s\n", "Op", "Op1", "Op2", "Result");
+    printf("---------------\n");
+    for (int i = 0; i < 4; i++) {
+        printf("%-4c %-5c %-5c %-5c\n", quadruples[i].operator, quadruples[i].operand1, quadruples[i].operand2, quadruples[i].result);
+    }
+
+    return 0;
+}
