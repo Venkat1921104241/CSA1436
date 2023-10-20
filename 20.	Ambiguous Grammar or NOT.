@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+#define MAX_RULES 100
+
+// Define a structure to represent a production rule
+struct ProductionRule {
+    char nonTerminal;
+    char production[100];
+};
+
+// Array to store production rules
+struct ProductionRule rules[MAX_RULES];
+int ruleCount = 0;
+
+// Function to check if a grammar rule is ambiguous
+bool isAmbiguous(int ruleIndex) {
+    // Check if there is another rule with the same non-terminal
+    char nonTerminal = rules[ruleIndex].nonTerminal;
+    for (int i = 0; i < ruleCount; i++) {
+        if (i != ruleIndex && rules[i].nonTerminal == nonTerminal) {
+            // There is another rule with the same non-terminal, so the grammar is ambiguous
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    // Read the production rules from input (assuming a specific format)
+    printf("Enter the number of production rules: ");
+    scanf("%d", &ruleCount);
+    
+    printf("Enter the production rules in the format (non-terminal -> production):\n");
+    for (int i = 0; i < ruleCount; i++) {
+        scanf(" %c -> %[^\n]", &rules[i].nonTerminal, rules[i].production);
+    }
+
+    // Check for ambiguity
+    bool isAmbiguousGrammar = false;
+    for (int i = 0; i < ruleCount; i++) {
+        if (isAmbiguous(i)) {
+            printf("The grammar is ambiguous.\n");
+            isAmbiguousGrammar = true;
+            break;
+        }
+    }
+
+    if (!isAmbiguousGrammar) {
+        printf("The grammar is not ambiguous.\n");
+    }
+
+    return 0;
+}
