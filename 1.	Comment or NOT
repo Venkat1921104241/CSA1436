@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+int main() {
+    FILE *file;
+    char line[256]; // Assuming a maximum line length of 255 characters
+    bool inSingleLineComment = false;
+    bool inMultiLineComment = false;
+
+    // Open the file for reading (replace "input.txt" with your file name)
+    file = fopen("input.txt", "r");
+    if (file == NULL) {
+        printf("File not found or unable to open.\n");
+        return 1;
+    }
+
+    // Read the file line by line
+    while (fgets(line, sizeof(line), file)) {
+        if (inMultiLineComment) {
+            // Check if the line contains the end of a multi-line comment (*/)
+            if (strstr(line, "*/") != NULL) {
+                inMultiLineComment = false;
+            }
+        } else {
+            // Check if the line contains a single-line comment (//)
+            if (strstr(line, "//") != NULL) {
+                printf("Line is a comment: %s", line);
+                continue; // Move to the next line
+            }
+
+            // Check if the line contains the start of a multi-line comment (/*)
+            if (strstr(line, "/*") != NULL) {
+                inMultiLineComment = true;
+            }
+        }
+    }
+
+    fclose(file); // Close the file
+
+    return 0;
+}
