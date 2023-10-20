@@ -1,0 +1,19 @@
+#include <stdio.h>
+
+int main() {
+    int a = 10, b = 5, c = 2, d = 8, result;
+
+    result = a + b * c / d;  // Multiplication and division have higher precedence than addition
+    printf("Result 1: %d\n", result);  // Expected output: 12
+
+    result = a - b + c * d;  // Multiplication has higher precedence than subtraction and addition
+    printf("Result 2: %d\n", result);  // Expected output: 22
+
+    result = a / b % c;  // Division and modulus have left-to-right associativity
+    printf("Result 3: %d\n", result);  // Expected output: 0
+
+    result = a * (b + c) % d;  // Parentheses can be used to control operator precedence
+    printf("Result 4: %d\n", result);  // Expected output: 6
+
+    return 0;
+}
