@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_SYMBOLS 100
+
+// Structure to represent a symbol entry
+struct SymbolEntry {
+    char name[50];
+    int value;
+};
+
+// Global symbol table
+struct SymbolEntry symbolTable[MAX_SYMBOLS];
+int symbolCount = 0;
+
+// Function to insert a symbol into the symbol table
+void insertSymbol(const char* name, int value) {
+    if (symbolCount < MAX_SYMBOLS) {
+        strcpy(symbolTable[symbolCount].name, name);
+        symbolTable[symbolCount].value = value;
+        symbolCount++;
+        printf("Symbol '%s' with value %d inserted.\n", name, value);
+    } else {
+        printf("Symbol table is full. Cannot insert '%s'.\n", name);
+    }
+}
+
+// Function to search for a symbol in the symbol table
+int searchSymbol(const char* name) {
+    for (int i = 0; i < symbolCount; i++) {
+        if (strcmp(symbolTable[i].name, name) == 0) {
+            return symbolTable[i].value;
+        }
+    }
+    return -1; // Symbol not found
+}
+
+int main() {
+    insertSymbol("x", 10);
+    insertSymbol("y", 20);
+
+    char searchName[50];
+    printf("Enter a symbol name to search: ");
+    scanf("%s", searchName);
+
+    int result = searchSymbol(searchName);
+    if (result != -1) {
+        printf("Symbol '%s' found with value %d.\n", searchName, result);
+    } else {
+        printf("Symbol '%s' not found.\n", searchName);
+    }
+
+    return 0;
+}
