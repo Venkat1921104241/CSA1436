@@ -1,0 +1,20 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+
+[0-9]+ {
+    printf("Input consists of digits: %s\n", yytext);
+}
+
+.|\n {
+    printf("Input does not consist of digits: %s\n", yytext);
+}
+
+%%
+
+int main() {
+    yylex();
+    return 0;
+}
