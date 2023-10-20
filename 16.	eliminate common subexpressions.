@@ -1,0 +1,18 @@
+#include <stdio.h>
+
+int main() {
+    int a = 5;
+    int b = 7;
+    int c, d;
+
+    // Common subexpression elimination
+    int common = a + b; // The expression a + b is common to both assignments
+
+    c = common * 2; // Using the common subexpression
+    d = common + 3; // Using the common subexpression
+
+    printf("c = %d\n", c);
+    printf("d = %d\n", d);
+
+    return 0;
+}
