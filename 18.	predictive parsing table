@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <string.h>
+
+// Predictive Parsing Table
+char parsingTable[4][7][10] = {
+    { "", "", "S->E", "", "S->E", "", "" },
+    { "E->E+T", "", "", "", "E->T", "", "E->T" },
+    { "", "T->T*F", "", "", "T->F", "", "T->F" },
+    { "", "", "F->(E)", "", "F->id", "", "" }
+};
+
+// Stack for parsing
+char stack[100];
+int top = -1;
+
+// Push a symbol onto the stack
+void push(char symbol) {
+    stack[++top] = symbol;
+}
+
+// Pop a symbol from the stack
+void pop() {
+    top--;
+}
+
+// Driver function for parsing
+void parseInput(char input[]) {
+    push('$');  // Push the dollar sign (end marker) onto the stack
+    push('S');  // Push the start symbol onto the stack
+
+    int inputIndex = 0;
+    char currentInputSymbol = input[inputIndex];
+    char stackTopSymbol;
+
+    while (stackTopSymbol != '$') {
+        stackTopSymbol = stack[top];
+
+        if (stackTopSymbol == currentInputSymbol) {
+            pop();  // Matched, pop from stack
+            currentInputSymbol = input[++inputIndex];
+        } else {
+            // Find the production rule in the parsing table
+            int row, col;
+            switch (stackTopSymbol) {
+                case 'S':
+                    row = 0;
+                    break;
+                case 'E':
+                    row = 1;
+                    break;
+                case 'T':
+                    row = 2;
+                    break;
+                case 'F':
+                    row = 3;
+                    break;
+                default:
+                    printf("Error: Invalid symbol on the stack.\n");
+                    return;
+            }
+
+            switch (currentInputSymbol) {
+                case '+':
+                    col = 0;
+                    break;
+                case '*':
+                    col = 1;
+                    break;
+                case '(':
+                    col = 2;
+                    break;
+                case ')':
+                    col = 3;
+                    break;
+                case 'id':
+                    col = 4;
+                    break;
+                case '$':
+                    col = 5;
+                    break;
+                default:
+                    printf("Error: Invalid input symbol.\n");
+                    return;
+            }
+
+            // Check if the cell is not empty (contains a production rule)
+            if (strcmp(parsingTable[row][col], "") == 0) {
+                printf("Error: Parsing table entry is empty.\n");
+                return;
+            }
+
+            // Replace the top of the stack with the production rule
+            pop();
+            char* productionRule = parsingTable[row][col];
+            int len = strlen(productionRule);
+            for (int i = len - 1; i >= 0; i--) {
+                if (productionRule[i] != ' ')
+                    push(productionRule[i]);
+            }
+        }
+    }
+
+    if (currentInputSymbol == '$') {
+        printf("Input string accepted!\n");
+    } else {
+        printf("Input string rejected.\n");
+    }
+}
+
+int main() {
+    char input[100];
+    printf("Enter an input string: ");
+    scanf("%s", input);
+    parseInput(input);
+
+    return 0;
+}
