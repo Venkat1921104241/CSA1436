@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main() {
+    char input[100];
+    printf("Enter a C expression: ");
+    fgets(input, sizeof(input), stdin);
+
+    int i = 0;
+    while (input[i] != '\0') {
+        // Skip white spaces
+        while (isspace(input[i])) {
+            i++;
+        }
+
+        // Check for identifiers
+        if (isalpha(input[i]) || input[i] == '_') {
+            printf("Identifier: ");
+            while (isalnum(input[i]) || input[i] == '_') {
+                putchar(input[i]);
+                i++;
+            }
+            printf("\n");
+        }
+
+        // Check for constants (integers)
+        if (isdigit(input[i])) {
+            printf("Constant: ");
+            while (isdigit(input[i])) {
+                putchar(input[i]);
+                i++;
+            }
+            printf("\n");
+        }
+
+        // Check for operators
+        if (strchr("+-*/%=<>!&|", input[i]) != NULL) {
+            printf("Operator: ");
+            putchar(input[i]);
+            i++;
+            if ((input[i] == '=' || input[i] == '&' || input[i] == '|') && input[i] != '\0') {
+                putchar(input[i]);
+                i++;
+            }
+            printf("\n");
+        }
+
+        // Move to the next character
+        i++;
+    }
+
+    return 0;
+}
