@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to handle non-terminal E
+void E();
+
+// Function to handle non-terminal T
+void T();
+
+// Function to handle non-terminal F
+void F();
+
+// Function to match the current input token
+void match(char expectedToken);
+
+// Global variables
+char input[100];
+int index = 0;
+
+int main() {
+    printf("Enter an arithmetic expression: ");
+    gets(input);
+    E();
+    if (input[index] == '\0') {
+        printf("Parsing successful!\n");
+    } else {
+        printf("Parsing failed: Unexpected symbol: %c\n", input[index]);
+    }
+    return 0;
+}
+
+void E() {
+    T();
+    while (input[index] == '+') {
+        match('+');
+        T();
+    }
+}
+
+void T() {
+    F();
+    while (input[index] == '*') {
+        match('*');
+        F();
+    }
+}
+
+void F() {
+    if (input[index] == '(') {
+        match('(');
+        E();
+        match(')');
+    } else if (isalnum(input[index])) {
+        match(input[index]);
+    } else {
+        printf("Parsing failed: Unexpected symbol: %c\n", input[index]);
+    }
+}
+
+void match(char expectedToken) {
+    if (input[index] == expectedToken) {
+        index++;
+    } else {
+        printf("Parsing failed: Expected '%c' but got '%c'\n", expectedToken, input[index]);
+    }
+}
