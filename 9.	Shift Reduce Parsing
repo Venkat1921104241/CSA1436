@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <string.h>
+
+// Stack data structure to store intermediate parsing states
+#define STACK_SIZE 100
+char stack[STACK_SIZE];
+int top = -1;
+
+// Function to push a character onto the stack
+void push(char c) {
+    if (top < STACK_SIZE - 1) {
+        stack[++top] = c;
+    } else {
+        printf("Stack overflow\n");
+    }
+}
+
+// Function to pop a character from the stack
+char pop() {
+    if (top >= 0) {
+        return stack[top--];
+    } else {
+        printf("Stack underflow\n");
+        return '\0';
+    }
+}
+
+// Function to perform shift operation
+void shift(char input[], int *index) {
+    push(input[(*index)++]);
+}
+
+// Function to perform reduce operation
+void reduce() {
+    char reduced[STACK_SIZE];
+    int reduced_index = 0;
+
+    // Find the rightmost production rule to reduce
+    while (top >= 0) {
+        reduced[reduced_index++] = pop();
+        if (reduced_index >= 2 && strcmp(reduced, "ab") == 0) {
+            // Replace "ab" with "S" on the stack
+            push('S');
+            return;
+        }
+    }
+
+    // No reduction found
+    printf("Error in parsing\n");
+}
+
+int main() {
+    char input[] = "aabb";
+    int index = 0;
+    int length = strlen(input);
+
+    while (index < length) {
+        // Perform a shift operation
+        shift(input, &index);
+    }
+
+    // Perform a reduce operation to check if the input string is valid
+    reduce();
+
+    // If the parsing is successful, the stack should contain 'S' at the end
+    if (stack[top] == 'S') {
+        printf("Parsing successful\n");
+    } else {
+        printf("Parsing failed\n");
+    }
+
+    return 0;
+}
