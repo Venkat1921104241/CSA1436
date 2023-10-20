@@ -1,0 +1,34 @@
+%{
+#include <stdio.h>
+%}
+
+%%
+int|char|float|double     { printf("Keyword: %s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]*    { printf("Identifier: %s\n", yytext); }
+[0-9]+                   { printf("Integer: %s\n", yytext); }
+[0-9]+"."[0-9]+          { printf("Float: %s\n", yytext); }
+"\""([^"\\]|\\.)*\""      { printf("String: %s\n", yytext); }
+'.'                      { printf("Operator: %s\n", yytext); }
+"("                      { printf("Left Parenthesis\n"); }
+")"                      { printf("Right Parenthesis\n"); }
+"{"                      { printf("Left Brace\n"); }
+"}"                      { printf("Right Brace\n"); }
+";"                      { printf("Semicolon\n"); }
+[ \t\n]                  ;  // Skip whitespace
+.                        { printf("Unrecognized: %s\n", yytext); }
+
+%%
+
+int main(int argc, char *argv[]) {
+    if (argc > 1) {
+        yyin = fopen(argv[1], "r");
+        if (!yyin) {
+            perror(argv[1]);
+            return 1;
+        }
+    }
+
+    yylex();
+    fclose(yyin);
+    return 0;
+}
