@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+// Function to eliminate left recursion
+void eliminateLeftRecursion(char nonTerminal, char productionRules[][100], int n) {
+    printf("Original Production Rules:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%c -> %s\n", nonTerminal, productionRules[i]);
+    }
+    
+    printf("After Left Recursion Elimination:\n");
+    char newNonTerminal = nonTerminal + 1;
+    for (int i = 0; i < n; i++) {
+        if (productionRules[i][0] == nonTerminal) {
+            printf("%c -> %s%c'\n", newNonTerminal, &productionRules[i][1], newNonTerminal);
+            printf("%c' -> %s%c' | ε\n", newNonTerminal, &productionRules[i][1], newNonTerminal);
+        } else {
+            printf("%c -> %s%c' | ε\n", nonTerminal, productionRules[i], newNonTerminal);
+        }
+    }
+}
+
+int main() {
+    // Example production rules
+    char nonTerminal = 'A';
+    char productionRules[][100] = {"Aα", "β"};
+    int n = 2;
+
+    eliminateLeftRecursion(nonTerminal, productionRules, n);
+
+    return 0;
+}
